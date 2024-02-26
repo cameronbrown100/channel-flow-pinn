@@ -13,6 +13,7 @@ from modulus.sym.geometry.primitives_2d import Rectangle, Line, Channel2D
 from modulus.sym.utils.sympy.functions import parabola
 from modulus.sym.eq.pdes.navier_stokes import NavierStokes
 from modulus.sym.eq.pdes.basic import NormalDotVec
+from modulus.sym.models.fourier_net import FourierNetArch
 from modulus.sym.domain.constraint import (
     PointwiseBoundaryConstraint,
     PointwiseInteriorConstraint,
@@ -88,15 +89,15 @@ def run(cfg: ModulusConfig) -> None:
         (4*chip_pos + 5*chip_width, chip_height),
     )
     geo = channel - rec1 - rec2 - rec3 - rec4 -rec5
+    
     x_pos = Symbol("x_pos")
-    #integral_line = Line((x_pos, 0), (x_pos, channel_width), 1)
+    integral_line = Line((x_pos, 0), (x_pos, channel_width), 1)
     x_pos_range = {
         x_pos: lambda batch_size: np.full(
             (batch_size, 1), np.random.uniform(0, channel_length)
         )
     }
 
-   
     # make domain
     domain = Domain()
 
@@ -105,7 +106,7 @@ def run(cfg: ModulusConfig) -> None:
     inlet = PointwiseBoundaryConstraint(
         nodes=nodes,
         geometry=inlet,
-        outvar={"p": 1},
+        outvar={"normal_dot_vel":inlet_vel},
         #lambda_weighting={"p": 10},
         batch_size=cfg.batch_size.inlet,
     )
@@ -160,22 +161,22 @@ def run(cfg: ModulusConfig) -> None:
     )
     domain.add_constraint(interior_hr, "interior_hr")
 
-    # # integral continuity
-    # def integral_criteria(invar, params):
-    #     sdf = geo.sdf(invar, params)
-    #     return np.greater(sdf["sdf"], 0)
+    # integral continuity
+    def integral_criteria(invar, params):
+        sdf = geo.sdf(invar, params)
+        return np.greater(sdf["sdf"], 0)
 
-    # integral_continuity = IntegralBoundaryConstraint(
-    #     nodes=nodes,
-    #     geometry=integral_line,
-    #     outvar={"normal_dot_vel": 1},
-    #     batch_size=cfg.batch_size.num_integral_continuity,
-    #     integral_batch_size=cfg.batch_size.integral_continuity,
-    #     lambda_weighting={"normal_dot_vel": 1},
-    #     criteria=integral_criteria,
-    #     parameterization=x_pos_range,
-    # )
-    # domain.add_constraint(integral_continuity, "integral_continuity")
+    integral_continuity = IntegralBoundaryConstraint(
+        nodes=nodes,
+        geometry=integral_line,
+        outvar={"normal_dot_vel":inlet_vel},
+        batch_size=cfg.batch_size.num_integral_continuity,
+        integral_batch_size=cfg.batch_size.integral_continuity,
+        lambda_weighting={"normal_dot_vel": 1},
+        criteria=integral_criteria,
+        parameterization=x_pos_range,
+    )
+    domain.add_constraint(integral_continuity, "integral_continuity")
 
     # add validation data
     file_path = "openfoam/channel_flow_laminar.csv"
