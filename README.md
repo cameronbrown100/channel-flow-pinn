@@ -1,7 +1,8 @@
 # PINN for laminar channel flow
 Example using Nvidia Modulus to simulate the laminar flow through a channel using a physics informed neural network (PINN) and transfer learning to different channel geometries.
+![Validation of u velocity]
 
-# Contentss
+# Contents
 
 # Setup
 1. Install latest Windows graphics driver
