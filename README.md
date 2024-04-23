@@ -22,9 +22,10 @@ https://github.com/NVIDIA/modulus-sym/tree/main?tab=readme-ov-file
 # Running
 ## Geometries
 ### Baseline
+![Baseline geometry used to train initial model](https://github.com/cameronbrown100/channel-flow-pinn/blob/main/baseline_geometry.png)
 
 ### Target
-
+![Geometry target of transfer learning](https://github.com/cameronbrown100/channel-flow-pinn/blob/main/target_geometry.png)
 
 1. Run script channel_flow_baseline.py. Trains the model on a geometry with equal sized constrictions.
 3. Model is saved to outputs/channel_flow_baseline/baseline
