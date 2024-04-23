@@ -19,7 +19,8 @@ defaults:
 # custom:
 #   arch: "FourierNetArch"
 
-network_dir : "baseline"
+network_dir : "target"
+initialization_network_dir : "../channel_flow_baseline/baseline"
 
 scheduler:
   decay_rate: 0.95
@@ -34,7 +35,7 @@ training:
   rec_monitor_freq: 1000
   rec_results_freq : 1000
   rec_constraint_freq: 2000
-  max_steps : 1500000
+  max_steps : 150000
 
 
 batch_size:
