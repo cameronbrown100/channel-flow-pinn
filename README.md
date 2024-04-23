@@ -13,4 +13,20 @@ Example using Nvidia Modulus to simulate the laminar flow through a channel usin
 ```
 docker run --gpus all --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -v ${PWD}:/workspace -it --rm nvcr.io/nvidia/modulus/modulus:23.11 bash
 ```
+Modulus documentation:
+https://docs.nvidia.com/deeplearning/modulus/getting-started/index.html
 
+Modulus packages:
+https://github.com/NVIDIA/modulus-sym/tree/main?tab=readme-ov-file
+
+# Running
+## Geometries
+### Baseline
+
+### Target
+
+
+1. Run script channel_flow_baseline.py. Trains the model on a geometry with equal sized constrictions.
+3. Model is saved to outputs/channel_flow_baseline/baseline
+4. Run script channel_flow_target.py. Applies transfer learning train the model on a geometry with unequal sized constrictions.
+5. Model is saved to outputs/channelo_flow_target/target
